@@ -4,7 +4,8 @@ import (
 	"sync"
 	"testing"
 )
-func TestMemEngine_BasicOperations(t *testing.T){
+
+func TestMemEngine_BasicOperations(t *testing.T) {
 	me := NewMemEngine()
 	err := me.Put("username", []byte("alice"))
 	if err != nil {
@@ -26,7 +27,7 @@ func TestMemEngine_concurrentReadAndWrite(t *testing.T) {
 	var wg sync.WaitGroup
 	numGoroutines := 100
 	// concurrent writers
-	for i:= 0 ; i < numGoroutines; i++ {
+	for i := 0; i < numGoroutines; i++ {
 		wg.Add(1)
 		go func(id int) {
 			defer wg.Done()

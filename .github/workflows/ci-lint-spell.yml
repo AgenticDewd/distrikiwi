@@ -51,25 +51,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run cspell
-        uses: streetsidesoftware/cspell-action@v6
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          files: |
-            **/*.md
-            **/*.go
-          config: |
-            {
-              "version": "0.2",
-              "language": "en",
-              "ignorePaths": [
-                "go.sum",
-                ".git/**"
-              ],
-              "words": [
-                "DistriKiwi",
-                "gofmt",
-                "golangci",
-                "memengine",
-                "wal"
-              ]
-            }
+          python-version: "3.x"
+
+      - name: Install codespell
+        run: pip install codespell
+
+      - name: Run codespell
+        run: |
+          codespell . \
+            --skip="./.git,./go.sum" \
+            --ignore-words-list="distrikiwi,gofmt,golangci,memengine,wal"

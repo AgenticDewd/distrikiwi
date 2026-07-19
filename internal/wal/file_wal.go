@@ -11,9 +11,9 @@ type FileWAL struct {
 	writeFile *os.File
 }
 
-// create a new FileWAL instance 
+// create a new FileWAL instance
 func NewFileWAL(writePath string) (*FileWAL, error) {
-	file , err := os.OpenFile(writePath, os.O_CREATE | os.O_WRONLY | os.O_APPEND, 0644)
+	file, err := os.OpenFile(writePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return nil, err
 	}
@@ -23,14 +23,14 @@ func NewFileWAL(writePath string) (*FileWAL, error) {
 	}, nil
 }
 
-// write to File 
+// write to File
 func (fw *FileWAL) Write(opType uint8, key string, value []byte) error {
 	// Implement the logic to write the operation to the file
 	keyLen := uint32(len(key))
 	valueLen := uint32(len(value))
 	// 1 opType, 4 bytes for key length, 4 bytes for value length, key bytes, value bytes
 	totalLen := 1 + 4 + 4 + keyLen + valueLen // 1 byte for opType, 4 bytes for key length, 4 bytes for value length
-	// write the operation type 1 byte 
+	// write the operation type 1 byte
 	buf := make([]byte, totalLen)
 	buf[0] = opType
 	// write key length 4 bytes
@@ -38,11 +38,11 @@ func (fw *FileWAL) Write(opType uint8, key string, value []byte) error {
 	// write value length 4 bytes
 	binary.BigEndian.PutUint32(buf[5:9], valueLen)
 	// write key bytes
-	copy(buf[9: 9 + keyLen],key)
+	copy(buf[9:9+keyLen], key)
 	// write value bytes
-	copy(buf[9 + keyLen:], value)
-	// write to the file 
-	_ , err := fw.writeFile.Write(buf)
+	copy(buf[9+keyLen:], value)
+	// write to the file
+	_, err := fw.writeFile.Write(buf)
 	if err != nil {
 		return err
 	}
@@ -50,8 +50,7 @@ func (fw *FileWAL) Write(opType uint8, key string, value []byte) error {
 	return fw.writeFile.Sync()
 }
 
-
-func (f *FileWAL) ReadWAL() ([] LogEntry, error) {
+func (f *FileWAL) ReadWAL() ([]LogEntry, error) {
 	// Implement the logic to read the WAL file and return the log entries
 	file, err := os.Open(f.writePath)
 	if err != nil {
@@ -65,7 +64,7 @@ func (f *FileWAL) ReadWAL() ([] LogEntry, error) {
 	headerBuf := make([]byte, 9) // 1 byte for opType, 4 bytes for key length, 4 bytes for value length
 	// read the file using full file
 	for {
-		_ , err := io.ReadFull(file, headerBuf)
+		_, err := io.ReadFull(file, headerBuf)
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -78,11 +77,11 @@ func (f *FileWAL) ReadWAL() ([] LogEntry, error) {
 		valueLen := binary.BigEndian.Uint32(headerBuf[5:9])
 		payloadSize := keyLen + valueLen
 		payloadBuf := make([]byte, payloadSize)
-		_ , err = io.ReadFull(file, payloadBuf)
+		_, err = io.ReadFull(file, payloadBuf)
 		if err != nil {
 			if err == io.EOF {
 				// TODO :throw corrupted log entry error
-				return nil , nil
+				return nil, nil
 			}
 			return nil, err
 		}

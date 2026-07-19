@@ -66,7 +66,7 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 	// ==========================================
 	// SIMULATE REBOOT: Recover from the WAL
 	// ==========================================
-	
+
 	// Create a brand-new, completely empty memory engine
 	recoveredEngine := engine.NewMemEngine()
 
