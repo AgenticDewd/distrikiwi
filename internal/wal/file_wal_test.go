@@ -56,7 +56,9 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 	}
 
 	// Close the WAL file to simulate the database server shutting down/crashing
-	dbWAL.Close()
+	if err := dbWAL.Close(); err != nil {
+		t.Fatalf("failed to close WAL: %v", err)
+	}
 
 	// ==========================================
 	// SIMULATE CRASH: Destroy the memory engine
@@ -75,7 +77,11 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to open WAL for recovery: %v", err)
 	}
-	defer recoveryWAL.Close()
+	defer func() {
+		if err := recoveryWAL.Close(); err != nil {
+			t.Fatalf("failed to close recovery WAL: %v", err)
+		}
+	}()
 
 	// Read all logged transactions sequentially
 	logs, err := recoveryWAL.ReadWAL()
@@ -85,14 +91,17 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 
 	// Replay each log entry into our empty recovered engine
 	for _, log := range logs {
-		if log.OpType == 0 { // Put
+		switch log.OpType {
+		case 0: // Put
 			if err := recoveredEngine.Put(log.Key, log.Value); err != nil {
 				t.Fatalf("recovery failed to replay PUT: %v", err)
 			}
-		} else if log.OpType == 1 { // Delete
+		case 1: // Delete
 			if err := recoveredEngine.Delete(log.Key); err != nil {
 				t.Fatalf("recovery failed to replay DELETE: %v", err)
 			}
+		default:
+			t.Fatalf("unexpected op type during recovery: %d", log.OpType)
 		}
 	}
 

@@ -50,21 +50,25 @@ func (fw *FileWAL) Write(opType uint8, key string, value []byte) error {
 	return fw.writeFile.Sync()
 }
 
-func (f *FileWAL) ReadWAL() ([]LogEntry, error) {
+func (f *FileWAL) ReadWAL() (entries []LogEntry, err error) {
 	// Implement the logic to read the WAL file and return the log entries
 	file, err := os.Open(f.writePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, nil
 		}
+		return nil, err
 	}
-	defer file.Close()
-	var entries []LogEntry
+	defer func() {
+		if closeErr := file.Close(); err == nil && closeErr != nil {
+			err = closeErr
+		}
+	}()
 	// store the header bytes
 	headerBuf := make([]byte, 9) // 1 byte for opType, 4 bytes for key length, 4 bytes for value length
 	// read the file using full file
 	for {
-		_, err := io.ReadFull(file, headerBuf)
+		_, err = io.ReadFull(file, headerBuf)
 		if err != nil {
 			if err == io.EOF {
 				break
