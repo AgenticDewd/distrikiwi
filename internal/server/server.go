@@ -29,7 +29,7 @@ func (s *GrpcServer) Put(ctx context.Context, req *pb.PutRequest) (*pb.PutRespon
 	if req.GetKey() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Key cannot be empty")
 	}
-	// 1. WAL first to acheive durability
+	// 1. WAL first to achieve durability
 	if err := s.wal.WriteOp(0, req.GetKey(), req.GetValue()); err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to write to WAL: %v", err)
 	}
@@ -63,7 +63,7 @@ func (s *GrpcServer) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.Del
 	if req.GetKey() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Key cannot be empty")
 	}
-	// 1. WAL first to acheive durability
+	// 1. WAL first to achieve durability
 	if err := s.wal.WriteOp(1, req.GetKey(), nil); err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to write to WAL: %v", err)
 	}

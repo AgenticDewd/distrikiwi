@@ -26,7 +26,11 @@ func main() {
 		fmt.Println("Failed to create WAL:", err)
 		return
 	}
-	defer dbWal.Close()
+	defer func() {
+		if err := dbWal.Close(); err != nil {
+			fmt.Println("Failed to close WAL:", err)
+		}
+	}()
 
 	// replay WAL to restore state
 	logs, err := dbWal.ReadWAL()
@@ -38,9 +42,10 @@ func main() {
 	if len(logs) > 0 {
 		fmt.Printf("Found %d transaction logs. Replaying state...\n", len(logs))
 		for _, entry := range logs {
-			if entry.OpType == 0 { // Put
+			switch entry.OpType {
+			case 0: // Put
 				_ = dbEngine.Put(entry.Key, entry.Value)
-			} else if entry.OpType == 1 { // Delete
+			case 1: // Delete
 				_ = dbEngine.Delete(entry.Key)
 			}
 		}
@@ -68,7 +73,9 @@ func main() {
 		<-sigChan
 		fmt.Println("\nGracefully shutting down DistriKV server...")
 		grpcServer.GracefulStop()
-		dbWal.Close()
+		if err := dbWal.Close(); err != nil {
+			fmt.Println("Failed to close WAL:", err)
+		}
 		fmt.Println("Shutdown complete. Goodbye!")
 		os.Exit(0)
 	}()

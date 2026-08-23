@@ -15,12 +15,16 @@ func main() {
 	const address = "localhost:50051"
 
 	// 1. Establish connection to the gRPC database server
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Printf("Did not connect: %v\n", err)
 		os.Exit(1)
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			fmt.Printf("Failed to close connection: %v\n", err)
+		}
+	}()
 
 	// 2. Initialize the generated client
 	client := pb.NewDistrikiwiClient(conn)
