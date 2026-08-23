@@ -28,13 +28,12 @@ func main() {
 	}
 	defer dbWal.Close()
 
-	// replay WAL to restore state 
-	logs ,err  := dbWal.ReadWAL()
+	// replay WAL to restore state
+	logs, err := dbWal.ReadWAL()
 	if err != nil {
 		fmt.Println("Failed to read WAL:", err)
 		os.Exit(1)
 	}
-
 
 	if len(logs) > 0 {
 		fmt.Printf("Found %d transaction logs. Replaying state...\n", len(logs))
