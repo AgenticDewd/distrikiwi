@@ -1,0 +1,36 @@
+syntax = "proto3";
+package distrikiwi;
+option go_package = "github.com/harhitosw/distrikiwi";
+service Distrikiwi {
+  rpc Get (GetRequest) returns (GetResponse);
+  rpc Put (PutRequest) returns (PutResponse);
+  rpc Delete (DeleteRequest) returns (DeleteResponse);
+}
+
+message PutRequest {
+  string key = 1;
+  bytes value = 2;
+}
+
+message PutResponse{
+bool success = 1;
+string message = 2;
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  bytes value = 1;
+  bool found = 2;
+}
+
+message DeleteRequest {
+  string key = 1;
+}
+
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
+}
