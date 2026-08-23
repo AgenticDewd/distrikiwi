@@ -36,7 +36,7 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 
 	for _, w := range writes {
 		// Log the write first (WAL)
-		if err := dbWAL.Write(0, w.key, w.val); err != nil {
+		if err := dbWAL.WriteOp(0, w.key, w.val); err != nil {
 			t.Fatalf("failed to write to WAL: %v", err)
 		}
 		// Apply to memory engine
@@ -47,7 +47,7 @@ func TestWAL_CrashAndRecovery(t *testing.T) {
 
 	// 4. Perform a deletion
 	// Log the deletion (OpType = 1)
-	if err := dbWAL.Write(1, "user:2", nil); err != nil {
+	if err := dbWAL.WriteOp(1, "user:2", nil); err != nil {
 		t.Fatalf("failed to log delete to WAL: %v", err)
 	}
 	// Apply delete to memory engine

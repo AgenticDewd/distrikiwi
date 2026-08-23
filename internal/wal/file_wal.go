@@ -24,7 +24,7 @@ func NewFileWAL(writePath string) (*FileWAL, error) {
 }
 
 // write to File
-func (fw *FileWAL) Write(opType uint8, key string, value []byte) error {
+func (fw *FileWAL) WriteOp(opType uint8, key string, value []byte) error {
 	// Implement the logic to write the operation to the file
 	keyLen := uint32(len(key))
 	valueLen := uint32(len(value))
@@ -101,6 +101,10 @@ func (f *FileWAL) ReadWAL() (entries []LogEntry, err error) {
 
 	}
 	return entries, nil
+}
+
+func ReadWALFile(path string) ([]LogEntry, error) {
+	return (&FileWAL{writePath: path}).ReadWAL()
 }
 
 func (f *FileWAL) Close() error {
