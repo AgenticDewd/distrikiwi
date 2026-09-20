@@ -7,18 +7,26 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/harhitosw/distrikiwi/internal/engine"
-	"github.com/harhitosw/distrikiwi/internal/server"
-	"github.com/harhitosw/distrikiwi/internal/wal"
-	pb "github.com/harhitosw/distrikiwi/proto"
+	"github.com/AgenticDewd/distrikiwi/internal/engine"
+	"github.com/AgenticDewd/distrikiwi/internal/server"
+	"github.com/AgenticDewd/distrikiwi/internal/wal"
+	pb "github.com/AgenticDewd/distrikiwi/proto"
 	"google.golang.org/grpc"
 )
 
+const (
+	defaultHost = "127.0.0.1"
+	port        = "50051"
+)
+
 func main() {
-	const port = ":50051"
+	port, host := os.Getenv("PORT"), os.Getenv("HOST")
+	if host == "" {
+		host = defaultHost
+	}
 	const walPath = "distrikiwi.wal"
 
-	fmt.Println("Starting Distrikiwi gRPC server on port", port)
+	fmt.Println("Starting Distrikiwi gRPC server on", net.JoinHostPort(host, port))
 	dbEngine := engine.NewMemEngine()
 
 	dbWal, err := wal.NewFileWAL(walPath)
@@ -55,7 +63,7 @@ func main() {
 	}
 
 	// 4. Start TCP Listener
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", net.JoinHostPort(host, port))
 	if err != nil {
 		fmt.Printf("Fatal: failed to listen on port %s: %v\n", port, err)
 		os.Exit(1)

@@ -10,7 +10,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/harhitosw/distrikiwi/internal/wal"
+	"github.com/AgenticDewd/distrikiwi/internal/wal"
 )
 
 func main() {
