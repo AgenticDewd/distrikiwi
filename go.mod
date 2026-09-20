@@ -1,4 +1,4 @@
-module github.com/harhitosw/distrikiwi
+module github.com/AgenticDewd/distrikiwi
 
 go 1.26.4
 

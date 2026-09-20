@@ -22,17 +22,17 @@ func TestMemEngine_BasicOperations(t *testing.T) {
 	}
 }
 
-func TestMemEngine_concurrentReadAndWrite(t *testing.T) {
+func TestMemEngine_concurrentReadAndWrite(_ *testing.T) {
 	me := NewMemEngine()
 	var wg sync.WaitGroup
 	numGoroutines := 100
 	// concurrent writers
 	for i := 0; i < numGoroutines; i++ {
 		wg.Add(1)
-		go func(id int) {
+		go func() {
 			defer wg.Done()
 			_ = me.Put("key", []byte("value"))
-		}(i)
+		}()
 	}
 	// Concurrent Readers
 	for i := 0; i < numGoroutines; i++ {

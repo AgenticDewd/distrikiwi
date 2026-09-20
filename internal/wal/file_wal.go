@@ -2,7 +2,9 @@ package wal
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
+	"math"
 	"os"
 )
 
@@ -26,8 +28,16 @@ func NewFileWAL(writePath string) (*FileWAL, error) {
 // write to File
 func (fw *FileWAL) WriteOp(opType uint8, key string, value []byte) error {
 	// Implement the logic to write the operation to the file
-	keyLen := uint32(len(key))
-	valueLen := uint32(len(value))
+	keyLength := len(key)
+	valueLength := len(value)
+	if keyLength > math.MaxUint32 || valueLength > math.MaxUint32 {
+		return fmt.Errorf("WAL key or value exceeds maximum length")
+	}
+	if valueLength > math.MaxInt-9-keyLength {
+		return fmt.Errorf("WAL entry exceeds maximum buffer size")
+	}
+	keyLen := uint32(keyLength)
+	valueLen := uint32(valueLength)
 	// 1 opType, 4 bytes for key length, 4 bytes for value length, key bytes, value bytes
 	totalLen := 1 + 4 + 4 + keyLen + valueLen // 1 byte for opType, 4 bytes for key length, 4 bytes for value length
 	// write the operation type 1 byte
@@ -50,9 +60,9 @@ func (fw *FileWAL) WriteOp(opType uint8, key string, value []byte) error {
 	return fw.writeFile.Sync()
 }
 
-func (f *FileWAL) ReadWAL() (entries []LogEntry, err error) {
+func (fw *FileWAL) ReadWAL() (entries []LogEntry, err error) {
 	// Implement the logic to read the WAL file and return the log entries
-	file, err := os.Open(f.writePath)
+	file, err := os.Open(fw.writePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, nil
@@ -107,9 +117,9 @@ func ReadWALFile(path string) ([]LogEntry, error) {
 	return (&FileWAL{writePath: path}).ReadWAL()
 }
 
-func (f *FileWAL) Close() error {
-	if f.writeFile != nil {
-		return f.writeFile.Close()
+func (fw *FileWAL) Close() error {
+	if fw.writeFile != nil {
+		return fw.writeFile.Close()
 	}
 	return nil
 }
