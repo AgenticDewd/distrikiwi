@@ -7,11 +7,12 @@
 package distrikiwi
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -345,7 +346,7 @@ const file_proto_distrikiwi_proto_rawDesc = "" +
 	"Distrikiwi\x126\n" +
 	"\x03Get\x12\x16.distrikiwi.GetRequest\x1a\x17.distrikiwi.GetResponse\x126\n" +
 	"\x03Put\x12\x16.distrikiwi.PutRequest\x1a\x17.distrikiwi.PutResponse\x12?\n" +
-	"\x06Delete\x12\x19.distrikiwi.DeleteRequest\x1a\x1a.distrikiwi.DeleteResponseB!Z\x1fgithub.com/harhitosw/distrikiwib\x06proto3"
+	"\x06Delete\x12\x19.distrikiwi.DeleteRequest\x1a\x1a.distrikiwi.DeleteResponseB!Z\x1fgithub.com/AgenticDewd/distrikiwib\x06proto3"
 
 var (
 	file_proto_distrikiwi_proto_rawDescOnce sync.Once

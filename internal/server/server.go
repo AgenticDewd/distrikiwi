@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/harhitosw/distrikiwi/internal/engine"
-	"github.com/harhitosw/distrikiwi/internal/wal"
-	pb "github.com/harhitosw/distrikiwi/proto"
+	"github.com/AgenticDewd/distrikiwi/internal/engine"
+	"github.com/AgenticDewd/distrikiwi/internal/wal"
+	pb "github.com/AgenticDewd/distrikiwi/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -24,7 +24,7 @@ func NewGrpcServer(eng engine.Engine, wl wal.WAL) *GrpcServer {
 	}
 }
 
-func (s *GrpcServer) Put(ctx context.Context, req *pb.PutRequest) (*pb.PutResponse, error) {
+func (s *GrpcServer) Put(_ context.Context, req *pb.PutRequest) (*pb.PutResponse, error) {
 	// Implement the Put method logic here
 	if req.GetKey() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Key cannot be empty")
@@ -40,7 +40,7 @@ func (s *GrpcServer) Put(ctx context.Context, req *pb.PutRequest) (*pb.PutRespon
 	return &pb.PutResponse{Success: true, Message: "Key stored successfully"}, nil
 }
 
-func (s *GrpcServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
+func (s *GrpcServer) Get(_ context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
 	// Implement the Get method logic here
 	if req.GetKey() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Key cannot be empty")
@@ -59,7 +59,7 @@ func (s *GrpcServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetRespon
 	}, nil
 }
 
-func (s *GrpcServer) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
+func (s *GrpcServer) Delete(_ context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
 	if req.GetKey() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Key cannot be empty")
 	}

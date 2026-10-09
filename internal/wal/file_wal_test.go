@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/harhitosw/distrikiwi/internal/engine"
-	"github.com/harhitosw/distrikiwi/internal/wal"
+	"github.com/AgenticDewd/distrikiwi/internal/engine"
+	"github.com/AgenticDewd/distrikiwi/internal/wal"
 )
 
 func TestWAL_CrashAndRecovery(t *testing.T) {

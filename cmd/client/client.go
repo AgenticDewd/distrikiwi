@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	pb "github.com/harhitosw/distrikiwi/proto"
+	pb "github.com/AgenticDewd/distrikiwi/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

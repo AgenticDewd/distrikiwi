@@ -1,6 +1,6 @@
 syntax = "proto3";
 package distrikiwi;
-option go_package = "github.com/harhitosw/distrikiwi";
+option go_package = "github.com/AgenticDewd/distrikiwi";
 service Distrikiwi {
   rpc Get (GetRequest) returns (GetResponse);
   rpc Put (PutRequest) returns (PutResponse);
